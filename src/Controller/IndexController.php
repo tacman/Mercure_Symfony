@@ -20,17 +20,31 @@ class IndexController extends AbstractController {
         ]);
     }
 
+    #[Route('/sse', name: 'app_sse')]
+    public function sse()
+    : Response {
+        $data = [
+            'event' => 'MessageEvent',
+            'data' => '<i>A mess</i>age! from sse'
+        ];
+        return $this->json($data);
+    }
+
     #[Route('/publish', name: 'publish')]
     public function publish(HubInterface $hub)
     : JsonResponse {
 
+        $data = [
+            'event' => 'MessageEvent',
+            'data' => '<i>A mess</i>age!'
+            ];
         $update = new Update(
             '/test',
-            json_encode(['update' => 'New update received at '.date("h:i:sa")])
+            json_encode($data)
         );
 
         $hub->publish($update);
 
-        return $this->json(['message' => 'Update published']);
+        return $this->json($data);
     }
 }

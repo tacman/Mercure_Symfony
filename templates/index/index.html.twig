@@ -7,22 +7,35 @@
     .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
     .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
 </style>
+    <div class="example-wrapper">
 
-<div class="example-wrapper">
+{#        <div hx-ext="sse" sse-connect="{{ path('app_sse') }}" sse-swap="MessageEvent">#}
+{#            Contents of this box will be updated in real time#}
+{#            with every SSE message received from the chatroom.#}
+{#        </div>#}
+
+
     <h1>Hello {{ controller_name }}! ✅</h1>
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code><a href="{{ '/Users/ybjozee/Documents/Projects/Symfony/mercure_review/src/Controller/IndexController.php'|file_link(0) }}">src/Controller/IndexController.php</a></code></li>
-        <li>Your template at <code><a href="{{ '/Users/ybjozee/Documents/Projects/Symfony/mercure_review/templates/index/index.html.twig'|file_link(0) }}">templates/index/index.html.twig</a></code></li>
-    </ul>
+    This friendly message is coming from mercure:
+
+    <div id="message">
+
+    </div>
 </div>
 {% endblock %}
 
 {% block javascripts %}
+    <script src="https://unpkg.com/htmx.org@1.9.10" integrity="sha384-D1Kt99CQMDuVetoL1lrYwg5t+9QdHe7NLX/SoJYkXDFfX37iInKRy5xLSi8nO7UC" crossorigin="anonymous"></script>
+
+    <script src="https://unpkg.com/htmx.org/dist/ext/sse.js"></script>
+
     <script>
+
         const eventSource = new EventSource("{{ mercure('/test')|escape('js') }}");
         eventSource.onmessage = event => {
+            document.getElementById('message').innerHTML = event.data;
+
             console.log(JSON.parse(event.data));
         }
     </script>
